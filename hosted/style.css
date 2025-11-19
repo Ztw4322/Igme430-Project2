@@ -7,6 +7,15 @@ html, body {
     background: linear-gradient(0deg, #0a3437 0%, #34a9b2 100%);
 }
 
+.domoList {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+grid-template-rows: 1fr;
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+margin-top: 10px;
+}
+
 *
 {
         font-family: "Montserrat", sans-serif;
@@ -65,14 +74,14 @@ label {
     padding-top: 10px;
 }
 
-#pass, #user, #pass2
+#pass, #user, #pass2, #domoName, #domoAge
 {
     width: 50%;
     margin-bottom: 10px;
 }
 
 
-#loginForm, #signupForm, #domoForm, .domo
+#loginForm, #signupForm, #domoForm
 {
     margin: auto;
     align-self: center;
@@ -82,7 +91,18 @@ label {
     text-align: center;
     padding-bottom: 20px;
 }
-.domoface 
+
+.domo
+{
+    margin: auto;
+    align-self: center;
+    background-color: #0a3437;
+    width: 40%;
+    border-radius: 25px;
+    text-align: center;
+    padding-bottom: 20px;
+}
+.domoface
 {
     width: 50%;
 }
