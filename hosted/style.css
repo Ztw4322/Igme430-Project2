@@ -51,7 +51,7 @@ nav:nth-child(1) {
     float: left;
 }
 
-.formSubmit {
+.formSubmit, .makeDomoSubmit {
   background-color: #34a9b2;
   width: 50%;
   border: none;
@@ -92,6 +92,21 @@ label {
     padding-bottom: 20px;
 }
 
+#domoName, #music
+{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}
+#domoForm
+{
+    width: 30%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
 .domo
 {
     margin: auto;
@@ -107,7 +122,7 @@ label {
     width: 50%;
 }
 
-.formSubmit
+.formSubmit, .makeDomoSubmit
 {
     display: block;
     margin: auto;

@@ -28,19 +28,29 @@ const DomoForm = (props) => {
             className="domoForm"
         >
             <label htmlFor="music">Type of Music Release</label>
+            <label htmlFor="music">Genre:</label>
             <select id="music" name="music">
                 <option value="Album">Album</option>
                 <option value="Ep">Ep</option>
                 <option value="Song">Song</option>
                 <option value="Unreleased">Unreleased</option>
             </select>
+            <select id="music" name="music">
+                <option value="Pop">Pop</option>
+                <option value="Rock">Rock</option>
+                <option value="Hip-Hop">Hip-Hop</option>
+                <option value="Electronic">Electronic</option>
+                <option value="Country">Country</option>
+                <option value="Jazz">Jazz</option>
+            </select>
+
             <label htmlFor="name">Name of the Work: </label>
-            <input type="text" id='domoName' name='name' placeholder='Name of Work' />
             <label htmlFor="artist">Artist Name: </label>
+            <input type="text" id='domoName' name='name' placeholder='Name of Work' />
             <input type="text" id='domoName' name='artist' placeholder='Artist Name' />
             <label htmlFor="url">Link To Work: </label>
-            <input type="text" id='domoName' name='url' placeholder='URL' />
             <label htmlFor="person">Who recommended this: </label>
+            <input type="text" id='domoName' name='url' placeholder='URL' />
             <input type="text" id='domoName' name='person' placeholder="Person's Name" />
             <input type="submit" value="Add" className='makeDomoSubmit' />
         </form>
