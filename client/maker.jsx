@@ -58,18 +58,18 @@ const DomoForm = (props) => {
 };
 
 const DomoList = (props) => {
-    const [domos, setDomos] = useState(props.domos);
+    const [music, setDomos] = useState(props.musics);
 
     useEffect(() => {
         const loadDomosFromServer = async () => {
-            const response = await fetch('/getDomos');
+            const response = await fetch('/getMusics');
             const data = await response.json();
-            setDomos(data.domos);
+            setDomos(data.musics);
         };
         loadDomosFromServer();
     }, [props.reloadDomos]);
 
-    if (domos.length === 0) {
+    if (music.length === 0) {
         return (
             <div className="domoList">
                 <h3 className="emptyDomo">No Domos Yet!</h3>
@@ -77,7 +77,7 @@ const DomoList = (props) => {
         );
     }
 
-    const domoNodes = domos.map(domo => {
+    const domoNodes = music.map(domo => {
         return (
             <div key={domo.id} className='domo'>
                 <img src="/assets/img/SongLogo.png" alt="logo face" className="domoFace" />
