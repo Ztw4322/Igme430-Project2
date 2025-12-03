@@ -48,7 +48,7 @@ const getMusics = async (req, res) => {
     console.log(err);
     return res.status(500).json({ error: 'Error retrieving Musics!' });
   }
-}
+};
 
 const makerPage = (req, res) => {
   return res.render('app');

@@ -7,14 +7,19 @@ const handleDomo = (e, onDomoAdded) => {
     e.preventDefault();
     helper.hideError();
 
-    const name = e.target.querySelector('#domoName').value;
-    const age = e.target.querySelector('#domoAge').value;
+    const music1 = e.target.querySelector('#music1').value;
+    const music2 = e.target.querySelector('#music2').value;
+    const workName = e.target.querySelector('#workName').value;
+    const artName = e.target.querySelector('#artName').value;
+    const url = e.target.querySelector('#url').value;
+    const prsnName = e.target.querySelector('#prsnName').value;
 
-    if (!name || !age) {
-        helper.handleError('All fields are required');
-        return false;
-    }
-    helper.sendPost(e.target.action, { name, age }, onDomoAdded);
+    // if (!music1 || !music2 || !workName || !artName || !url || !prsnName) {
+    //     console.log({ music1, music2, workName, artName, url, prsnName,});
+    //     helper.handleError('All fields are required');
+    //     return false;
+    // }
+    helper.sendPost(e.target.action, { music1, music2, workName, artName, url, prsnName}, onDomoAdded);
     return false;
 };
 
@@ -27,15 +32,15 @@ const DomoForm = (props) => {
             method="POST"
             className="domoForm"
         >
-            <label htmlFor="music">Type of Music Release</label>
-            <label htmlFor="music">Genre:</label>
-            <select id="music" name="music">
+            <label htmlFor="music1">Type of Music Release</label>
+            <label htmlFor="music2">Genre:</label>
+            <select id="music1" name="music1">
                 <option value="Album">Album</option>
                 <option value="Ep">Ep</option>
                 <option value="Song">Song</option>
                 <option value="Unreleased">Unreleased</option>
             </select>
-            <select id="music" name="music">
+            <select id="music2" name="music2">
                 <option value="Pop">Pop</option>
                 <option value="Rock">Rock</option>
                 <option value="Hip-Hop">Hip-Hop</option>
@@ -46,28 +51,32 @@ const DomoForm = (props) => {
 
             <label htmlFor="name">Name of the Work: </label>
             <label htmlFor="artist">Artist Name: </label>
-            <input type="text" id='domoName' name='name' placeholder='Name of Work' />
-            <input type="text" id='domoName' name='artist' placeholder='Artist Name' />
+            <input type="text" id='workName' name='name' placeholder='Name of Work' />
+            <input type="text" id='artName' name='artist' placeholder='Artist Name' />
             <label htmlFor="url">Link To Work: </label>
             <label htmlFor="person">Who recommended this: </label>
-            <input type="text" id='domoName' name='url' placeholder='URL' />
-            <input type="text" id='domoName' name='person' placeholder="Person's Name" />
+            <input type="text" id='url' name='url' placeholder='URL' />
+            <input type="text" id='prsnName' name='person' placeholder="Person's Name" />
             <input type="submit" value="Add" className='makeDomoSubmit' />
         </form>
     );
 };
 
 const DomoList = (props) => {
-    const [music, setDomos] = useState(props.musics);
+    const [music, setDomos] = useState(props.Musics);
 
     useEffect(() => {
         const loadDomosFromServer = async () => {
             const response = await fetch('/getMusics');
             const data = await response.json();
-            setDomos(data.musics);
+            setDomos(data.Musics);
+            console.log(data.Musics);
         };
         loadDomosFromServer();
     }, [props.reloadDomos]);
+
+    try
+    {
 
     if (music.length === 0) {
         return (
@@ -77,21 +86,30 @@ const DomoList = (props) => {
         );
     }
 
-    const domoNodes = music.map(domo => {
+    const musicNodes = music.map(music => {
         return (
-            <div key={domo.id} className='domo'>
+            <div key={music.id} className='domo'>
                 <img src="/assets/img/SongLogo.png" alt="logo face" className="domoFace" />
-                <h3 className="domoName">Name: {domo.name}</h3>
-                <h3 className="domoAge">Age: {domo.age}</h3>
+                <h3 className="domoName">Type: {music.music1}</h3>
+                <h3 className="domoAge">Genre: {music.music2}</h3>
+                <h3 className="domoAge">Name: {music.workName}</h3>
+                <h3 className="domoAge">Artist: {music.artName}</h3>
+                <h3 className="domoAge">url: {music.url}</h3>
+                <h3 className="domoAge">Recommender: {music.prsnName}</h3>
             </div>
         );
     });
 
     return (
         <div className='domoList'>
-            {domoNodes}
+            {musicNodes}
         </div>
     );
+}
+catch
+{
+    console.log("err");
+}
 };
 
 const App = () => {

@@ -2,7 +2,7 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
-  app.get('/getDomos', mid.requireLogin, controllers.Music.getMusics);
+  app.get('/getMusics', mid.requireLogin, controllers.Music.getMusics);
 
   app.get('/login', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requireLogout, controllers.Account.login);
