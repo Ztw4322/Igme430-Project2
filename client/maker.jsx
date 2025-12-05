@@ -7,19 +7,19 @@ const handleDomo = (e, onDomoAdded) => {
     e.preventDefault();
     helper.hideError();
 
-    const music1 = e.target.querySelector('#music1').value;
-    const music2 = e.target.querySelector('#music2').value;
-    const workName = e.target.querySelector('#workName').value;
-    const artName = e.target.querySelector('#artName').value;
+    const musicType = e.target.querySelector('#musicType').value;
+    const genre = e.target.querySelector('#genre').value;
+    const albumName = e.target.querySelector('#albumName').value;
+    const artistName = e.target.querySelector('#artistName').value;
     const url = e.target.querySelector('#url').value;
-    const prsnName = e.target.querySelector('#prsnName').value;
+    const personName = e.target.querySelector('#personName').value;
+    console.log({ musicType, genre, albumName, artistName, url, personName,});
 
-    // if (!music1 || !music2 || !workName || !artName || !url || !prsnName) {
-    //     console.log({ music1, music2, workName, artName, url, prsnName,});
-    //     helper.handleError('All fields are required');
-    //     return false;
-    // }
-    helper.sendPost(e.target.action, { music1, music2, workName, artName, url, prsnName}, onDomoAdded);
+    if (!musicType || !genre || !albumName || !artistName || !url || !personName) {
+        helper.handleError('All fields are required');
+        return false;
+    }
+    helper.sendPost(e.target.action, { musicType, genre, albumName, artistName, url, personName}, onDomoAdded);
     return false;
 };
 
@@ -32,15 +32,15 @@ const DomoForm = (props) => {
             method="POST"
             className="domoForm"
         >
-            <label htmlFor="music1">Type of Music Release</label>
-            <label htmlFor="music2">Genre:</label>
-            <select id="music1" name="music1">
+            <label htmlFor="musicType">Type of Music Release</label>
+            <label htmlFor="genre">Genre:</label>
+            <select id="musicType" name="musicType">
                 <option value="Album">Album</option>
                 <option value="Ep">Ep</option>
                 <option value="Song">Song</option>
                 <option value="Unreleased">Unreleased</option>
             </select>
-            <select id="music2" name="music2">
+            <select id="genre" name="genre">
                 <option value="Pop">Pop</option>
                 <option value="Rock">Rock</option>
                 <option value="Hip-Hop">Hip-Hop</option>
@@ -51,32 +51,88 @@ const DomoForm = (props) => {
 
             <label htmlFor="name">Name of the Work: </label>
             <label htmlFor="artist">Artist Name: </label>
-            <input type="text" id='workName' name='name' placeholder='Name of Work' />
-            <input type="text" id='artName' name='artist' placeholder='Artist Name' />
+            <input type="text" id='albumName' name='name' placeholder='Name of Work' />
+            <input type="text" id='artistName' name='artist' placeholder='Artist Name' />
             <label htmlFor="url">Link To Work: </label>
             <label htmlFor="person">Who recommended this: </label>
             <input type="text" id='url' name='url' placeholder='URL' />
-            <input type="text" id='prsnName' name='person' placeholder="Person's Name" />
+            <input type="text" id='personName' name='person' placeholder="Person's Name" />
             <input type="submit" value="Add" className='makeDomoSubmit' />
         </form>
     );
 };
 
-const DomoList = (props) => {
-    const [music, setDomos] = useState(props.Musics);
+const PopularGenre = (props) =>
+{
+     const [music, setMusic] = useState(props.musics);
 
     useEffect(() => {
         const loadDomosFromServer = async () => {
             const response = await fetch('/getMusics');
             const data = await response.json();
-            setDomos(data.Musics);
+            setMusic(data.Musics);
             console.log(data.Musics);
         };
         loadDomosFromServer();
     }, [props.reloadDomos]);
 
-    try
-    {
+   let genreCounts = {
+    "Pop": 0,
+    "Rock": 0,
+    "Hip-Hop": 0,
+    "Country": 0,
+    "Jazz": 0,
+    "Electronic": 0
+};
+
+try {
+if(music.length == 0)
+{       return (
+     <div className="domoList">
+                <h3 className="emptyDomo">No Songs</h3>
+            </div>
+);
+}
+
+    for(let i = 0; i < music.length; i++) {
+    const genre = music[i].genre;
+    if (genreCounts.hasOwnProperty(genre)) {
+        genreCounts[genre]++;
+    }
+} 
+
+const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
+    (max, current) => {
+        
+        return current[1] > max[1] ? current : max;
+    },
+    Object.entries(genreCounts)[0]
+);
+
+return (<div className="GenreList">
+                <h3 className="empty">{mostPopularGenre}</h3>
+                </div>);
+}
+catch
+{
+    console.log("ee");
+}
+};
+
+
+const DomoList = (props) => {
+    const [music, setMusic] = useState(props.musics);
+
+    useEffect(() => {
+        const loadDomosFromServer = async () => {
+            const response = await fetch('/getMusics');
+            const data = await response.json();
+            setMusic(data.Musics);
+            console.log(data.Musics);
+        };
+        loadDomosFromServer();
+    }, [props.reloadDomos]);
+
 
     if (music.length === 0) {
         return (
@@ -90,12 +146,12 @@ const DomoList = (props) => {
         return (
             <div key={music.id} className='domo'>
                 <img src="/assets/img/SongLogo.png" alt="logo face" className="domoFace" />
-                <h3 className="domoName">Type: {music.music1}</h3>
-                <h3 className="domoAge">Genre: {music.music2}</h3>
-                <h3 className="domoAge">Name: {music.workName}</h3>
-                <h3 className="domoAge">Artist: {music.artName}</h3>
+                <h3 className="domoName">Type: {music.musicType}</h3>
+                <h3 className="domoAge">Genre: {music.genre}</h3>
+                <h3 className="domoAge">Name: {music.albumName}</h3>
+                <h3 className="domoAge">Artist: {music.artistName}</h3>
                 <h3 className="domoAge">url: {music.url}</h3>
-                <h3 className="domoAge">Recommender: {music.prsnName}</h3>
+                <h3 className="domoAge">Recommender: {music.personName}</h3>
             </div>
         );
     });
@@ -105,11 +161,6 @@ const DomoList = (props) => {
             {musicNodes}
         </div>
     );
-}
-catch
-{
-    console.log("err");
-}
 };
 
 const App = () => {
@@ -119,9 +170,10 @@ const App = () => {
         <div>
             <div id="makeDomo">
                 <DomoForm triggerReload={() => setReloadDomos(!reloadDomos)} />
+                <PopularGenre reloadDomos={reloadDomos}/>
             </div>
             <div id="domos">
-                <DomoList domos={[]} reloadDomos={reloadDomos} />
+                <DomoList musics={[]} reloadDomos={reloadDomos} />
             </div>
         </div>
     );
