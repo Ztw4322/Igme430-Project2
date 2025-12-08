@@ -3,7 +3,7 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
-const handleDomo = (e, onDomoAdded) => {
+const handlemusic = (e, onmusicAdded) => {
     e.preventDefault();
     helper.hideError();
 
@@ -19,18 +19,53 @@ const handleDomo = (e, onDomoAdded) => {
         helper.handleError('All fields are required');
         return false;
     }
-    helper.sendPost(e.target.action, { musicType, genre, albumName, artistName, url, personName}, onDomoAdded);
+    helper.sendPost(e.target.action, { musicType, genre, albumName, artistName, url, personName}, onmusicAdded);
     return false;
 };
 
-const DomoForm = (props) => {
+const handletoggleListened = async (e, music, onUpdate) => {
+    e.preventDefault();
+    helper.hideError();
+
+    helper.sendPost('/toggleListened', { music }, onUpdate);
+    return false;
+};
+
+const MusicChecklistItem = ({ musics, triggerReload }) => {
+
+    if(!musics)
+    {
+        return (<div>No Music Yet</div>);
+    }
+    
+    const isListened = musics.listened;
+    const checkboxId = `listened-${musics._id}`;
+
     return (
-        <form id="domoForm"
-            name="domoForm"
-            onSubmit={(e) => handleDomo(e, props.triggerReload)}
+        <div className='listenedCheckItem'>
+            <label htmlFor={checkboxId}>
+                <span>
+                    **{musics.albumName}** by {musics.artistName}
+                </span>
+            </label>
+            <input
+                type="checkbox"
+                id={checkboxId}
+                checked={isListened}
+                onChange={(e) => handletoggleListened(e, musics, triggerReload)}
+            />
+        </div>
+    );
+};
+
+const MusicForm = (props) => {
+    return (
+        <form id="musicForm"
+            name="musicForm"
+            onSubmit={(e) => handlemusic(e, props.triggerReload)}
             action="/maker"
             method="POST"
-            className="domoForm"
+            className="musicForm"
         >
             <label htmlFor="musicType">Type of Music Release</label>
             <label htmlFor="genre">Genre:</label>
@@ -57,24 +92,25 @@ const DomoForm = (props) => {
             <label htmlFor="person">Who recommended this: </label>
             <input type="text" id='url' name='url' placeholder='URL' />
             <input type="text" id='personName' name='person' placeholder="Person's Name" />
-            <input type="submit" value="Add" className='makeDomoSubmit' />
+            <input type="submit" value="Add" className='makemusicSubmit' />
         </form>
     );
 };
+
 
 const PopularGenre = (props) =>
 {
      const [music, setMusic] = useState(props.musics);
 
     useEffect(() => {
-        const loadDomosFromServer = async () => {
+        const loadmusicsFromServer = async () => {
             const response = await fetch('/getMusics');
             const data = await response.json();
             setMusic(data.Musics);
             console.log(data.Musics);
         };
-        loadDomosFromServer();
-    }, [props.reloadDomos]);
+        loadmusicsFromServer();
+    }, [props.reloadmusics]);
 
    let genreCounts = {
     "Pop": 0,
@@ -88,8 +124,8 @@ const PopularGenre = (props) =>
 try {
 if(music.length == 0)
 {       return (
-     <div className="domoList">
-                <h3 className="emptyDomo">No Songs</h3>
+     <div className="musicList">
+                <h3 className="emptymusic">No Songs</h3>
             </div>
 );
 }
@@ -109,71 +145,72 @@ const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
     Object.entries(genreCounts)[0]
 );
 
-return (<div className="GenreList">
+return (<div className="GenreBox">
+                <h2>Most Suggested Genre</h2>
                 <h3 className="empty">{mostPopularGenre}</h3>
                 </div>);
 }
 catch
 {
-    console.log("ee");
 }
 };
 
 
-const DomoList = (props) => {
+const MusicList = (props) => {
     const [music, setMusic] = useState(props.musics);
 
     useEffect(() => {
-        const loadDomosFromServer = async () => {
+        const loadmusicsFromServer = async () => {
             const response = await fetch('/getMusics');
             const data = await response.json();
             setMusic(data.Musics);
             console.log(data.Musics);
         };
-        loadDomosFromServer();
-    }, [props.reloadDomos]);
+        loadmusicsFromServer();
+    }, [props.reloadmusics]);
 
 
     if (music.length === 0) {
         return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos Yet!</h3>
+            <div className="musicList">
+                <h3 className="emptymusic">No musics Yet!</h3>
             </div>
         );
     }
 
     const musicNodes = music.map(music => {
         return (
-            <div key={music.id} className='domo'>
-                <img src="/assets/img/SongLogo.png" alt="logo face" className="domoFace" />
-                <h3 className="domoName">Type: {music.musicType}</h3>
-                <h3 className="domoAge">Genre: {music.genre}</h3>
-                <h3 className="domoAge">Name: {music.albumName}</h3>
-                <h3 className="domoAge">Artist: {music.artistName}</h3>
-                <h3 className="domoAge">url: {music.url}</h3>
-                <h3 className="domoAge">Recommender: {music.personName}</h3>
+            <div key={music.id} className='music'>
+                <img src="/assets/img/SongLogo.png" alt="logo face" className="musicFace" />
+                <h3 className="musicName">Type: {music.musicType}</h3>
+                <h3 className="musicAge">Genre: {music.genre}</h3>
+                <h3 className="musicAge">Name: {music.albumName}</h3>
+                <h3 className="musicAge">Artist: {music.artistName}</h3>
+                <h3 className="musicAge">url: {music.url}</h3>
+                <h3 className="musicAge">Recommender: {music.personName}</h3>
             </div>
         );
     });
 
     return (
-        <div className='domoList'>
+        <div className='musicList'>
             {musicNodes}
         </div>
     );
 };
 
 const App = () => {
-    const [reloadDomos, setReloadDomos] = useState(false);
+    const [reloadmusics, setReloadmusics] = useState(false);
 
     return (
         <div>
-            <div id="makeDomo">
-                <DomoForm triggerReload={() => setReloadDomos(!reloadDomos)} />
-                <PopularGenre reloadDomos={reloadDomos}/>
+            <div id="makemusic" className='parent'>
+                <MusicChecklistItem musics={[]} reloadmusics={reloadmusics}/>
+                <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
+                <PopularGenre reloadmusics={reloadmusics}/>
             </div>
-            <div id="domos">
-                <DomoList musics={[]} reloadDomos={reloadDomos} />
+            <div id="musics">
+                <MusicList musics={[]} reloadmusics={reloadmusics} />
             </div>
         </div>
     );

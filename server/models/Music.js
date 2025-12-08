@@ -34,6 +34,7 @@ const musicSchema = new mongoose.Schema({
     trim: true,
     set: setName,
   },
+  listened: { type: Boolean, default: false },
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,

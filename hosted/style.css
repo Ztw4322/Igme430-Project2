@@ -7,7 +7,7 @@ html, body {
     background: linear-gradient(0deg, #0a3437 0%, #34a9b2 100%);
 }
 
-.domoList {
+.musicList {
 display: grid;
 grid-template-columns: repeat(5, 1fr);
 grid-template-rows: 1fr;
@@ -51,7 +51,7 @@ nav:nth-child(1) {
     float: left;
 }
 
-.formSubmit, .makeDomoSubmit {
+.formSubmit, .makemusicSubmit {
   background-color: #34a9b2;
   width: 50%;
   border: none;
@@ -74,14 +74,14 @@ label {
     padding-top: 10px;
 }
 
-#pass, #user, #pass2, #domoName, #domoAge
+#pass, #user, #pass2, #musicName, #musicAge
 {
     width: 50%;
     margin-bottom: 10px;
 }
 
 
-#loginForm, #signupForm, #domoForm
+#loginForm, #signupForm, #musicForm
 {
     margin: auto;
     align-self: center;
@@ -92,37 +92,73 @@ label {
     padding-bottom: 20px;
 }
 
-#domoName, #music
+#musicName, #music
 {
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
 }
-#domoForm
+#musicForm
 {
-    width: 30%;
+    width: 100%;
     display: grid;
+        margin-top: 10px;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
 }
-.domo
+
+.parent {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+grid-template-rows: 1fr;
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+}
+.music
+{
+    margin: auto;
+    align-self: center;
+    background-color: #0a3437;
+    width: 80%;
+    color:#ffffff;
+    border-radius: 25px;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-top: 10px;
+}
+
+.GenreBox
 {
     margin: auto;
     align-self: center;
     background-color: #0a3437;
     width: 40%;
+    height: 40%;
     border-radius: 25px;
     text-align: center;
     padding-bottom: 20px;
 }
-.domoface
+
+.GenreBox h2
+{
+        color:#36e4a5;
+
+}
+
+.GenreBox h3
+{
+        color:#ffffff;
+        font-size: 45px;
+}
+
+.musicface
 {
     width: 50%;
 }
 
-.formSubmit, .makeDomoSubmit
+.formSubmit, .makemusicSubmit
 {
     display: block;
     margin: auto;
@@ -145,9 +181,9 @@ label {
 }
 
 input[type=text], select {
-  width: 30%;
+  width: 50%;
   padding: 12px;
-  margin: 8px 0;
+  margin: auto;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;

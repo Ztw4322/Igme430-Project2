@@ -13,6 +13,7 @@ const makeMusic = async (req, res) => {
     genre: req.body.genre,
     albumName: req.body.albumName,
     artistName: req.body.artistName,
+    listened: false,
     url: req.body.url,
     personName: req.body.personName,
     owner: req.session.account._id,
@@ -26,6 +27,7 @@ const makeMusic = async (req, res) => {
       genre: newMusic.genre,
       albumName: newMusic.albumName,
       artistName: newMusic.artistName,
+      listened: newMusic.listened,
       url: newMusic.url,
       personName: newMusic.personName,
     });
@@ -50,6 +52,21 @@ const getMusics = async (req, res) => {
   }
 };
 
+const toggleListen = async (req, res) => {
+  if (!req.albumName) {
+    return res.status(400).json({ error: 'Music ID is required to toggle status.' });
+  }
+
+  const musicId = req.albumName;
+  const ownerId = req.session.owner;
+
+  const music = await Music.findOne({ albumName: musicId, owner: ownerId }).exec();
+
+  music.listened = !music.listened;
+  await music.save();
+  return res.status(200).json({ message: 'Listened status successfully toggled.', music });
+};
+
 const makerPage = (req, res) => {
   return res.render('app');
 };
@@ -58,4 +75,5 @@ module.exports = {
   makerPage,
   makeMusic,
   getMusics,
+  toggleListen,
 };
