@@ -134,12 +134,37 @@ grid-row-gap: 0px;
     margin: auto;
     align-self: center;
     background-color: #0a3437;
-    width: 40%;
+    width: 45%;
     height: 40%;
     border-radius: 25px;
     text-align: center;
     padding-bottom: 20px;
 }
+.column
+{
+display: grid;
+grid-template-columns: 1fr 1fr;
+padding: auto;  
+}
+
+.boxed label
+{
+    display: inline;
+    height:50%
+}
+
+.listenedContainer{
+  margin: auto;
+  overflow: auto;
+    align-self: center;
+    background-color: #0a3437;
+    width: 70%;
+    height: 50%;
+    border-radius: 25px;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
 
 .GenreBox h2
 {

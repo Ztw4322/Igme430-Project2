@@ -23,39 +23,57 @@ const handlemusic = (e, onmusicAdded) => {
     return false;
 };
 
-const handletoggleListened = async (e, music, onUpdate) => {
+const handletoggleListened = (e, music, onUpdate) => {
     e.preventDefault();
     helper.hideError();
 
-    helper.sendPost('/toggleListened', { music }, onUpdate);
+    helper.sendPost('/toggleListen', { music }, onUpdate);
     return false;
 };
 
-const MusicChecklistItem = ({ musics, triggerReload }) => {
+const MusicChecklistItem = (props) => {
 
-    if(!musics)
+    const [music, setMusic] = useState(props.musics);
+
+      useEffect(() => {
+        const loadmusicsFromServer = async () => {
+            const response = await fetch('/getMusics');
+            const data = await response.json();
+            setMusic(data.Musics);
+            console.log(data.Musics);
+        };
+        loadmusicsFromServer();
+    }, [props.reloadmusics]);
+    
+    if(music.length == 0)
     {
         return (<div>No Music Yet</div>);
     }
-    
-    const isListened = musics.listened;
-    const checkboxId = `listened-${musics._id}`;
 
+   const ListenvsUnListen = music.map(music => {    
+    const isListened = music.listened;
     return (
-        <div className='listenedCheckItem'>
-            <label htmlFor={checkboxId}>
-                <span>
-                    **{musics.albumName}** by {musics.artistName}
-                </span>
+        <div className='listenedCheckItem column' key={music._id}>
+            <div  className='boxed'>
+            <label htmlFor={music._id}>
+                    {music.albumName} by {music.artistName}**
             </label>
+            </div>
+            <div className='boxed'>
             <input
                 type="checkbox"
-                id={checkboxId}
+                id={music._id}
                 checked={isListened}
-                onChange={(e) => handletoggleListened(e, musics, triggerReload)}
+                onChange={(e) => handletoggleListened(e, music, props.triggerReload)}
             />
+            </div>
         </div>
-    );
+    );});
+
+    return (<div className='listenedContainer'>
+        <h3>Listened vs UnListened</h3>
+        {ListenvsUnListen}
+    </div>);
 };
 
 const MusicForm = (props) => {
@@ -93,8 +111,66 @@ const MusicForm = (props) => {
             <input type="text" id='url' name='url' placeholder='URL' />
             <input type="text" id='personName' name='person' placeholder="Person's Name" />
             <input type="submit" value="Add" className='makemusicSubmit' />
+            <p id='echoMessage' className='hidden'>All Fields Required!</p>
         </form>
     );
+};
+
+const MostListened = (props) =>
+{
+     const [music, setMusic] = useState(props.musics);
+
+    useEffect(() => {
+        const loadmusicFromServer = async () => {
+            const response = await fetch('/getMusics');
+            const data = await response.json();
+            setMusic(data.Musics);
+            console.log(data.Musics);
+        };
+        loadmusicFromServer();
+    }, [props.reloadmusics]);
+
+   let genreCounts = {
+    "Pop": 0,
+    "Rock": 0,
+    "Hip-Hop": 0,
+    "Country": 0,
+    "Jazz": 0,
+    "Electronic": 0
+};
+
+try {
+if(music.length == 0)
+{       return (
+     <div className="musicList">
+                <h3 className="emptymusic">No Songs</h3>
+            </div>
+);
+}
+
+    for(let i = 0; i < music.length; i++) {
+    const genre = music[i].genre;
+    if (genreCounts.hasOwnProperty(genre) && music[i].listened) {
+        genreCounts[genre]++;
+    }
+} 
+
+const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
+    (max, current) => {
+        
+        return current[1] > max[1] ? current : max;
+    },
+    Object.entries(genreCounts)[0]
+);
+
+return (<div className="GenreBox">
+                <h2>Most Listened Genre</h2>
+                <h3 className="empty">{mostPopularGenre}</h3>
+                </div>);
+}
+catch
+{
+}
 };
 
 
@@ -103,13 +179,13 @@ const PopularGenre = (props) =>
      const [music, setMusic] = useState(props.musics);
 
     useEffect(() => {
-        const loadmusicsFromServer = async () => {
+        const loadmusicFromServer = async () => {
             const response = await fetch('/getMusics');
             const data = await response.json();
             setMusic(data.Musics);
             console.log(data.Musics);
         };
-        loadmusicsFromServer();
+        loadmusicFromServer();
     }, [props.reloadmusics]);
 
    let genreCounts = {
@@ -207,7 +283,10 @@ const App = () => {
             <div id="makemusic" className='parent'>
                 <MusicChecklistItem musics={[]} reloadmusics={reloadmusics}/>
                 <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
-                <PopularGenre reloadmusics={reloadmusics}/>
+                <div>
+                <PopularGenre reloadmusics={reloadmusics} />
+                <MostListened reloadmusics={reloadmusics}/>
+                </div>
             </div>
             <div id="musics">
                 <MusicList musics={[]} reloadmusics={reloadmusics} />

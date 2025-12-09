@@ -14,6 +14,7 @@ const router = (app) => {
   app.get('/maker', mid.requireLogin, controllers.Music.makerPage);
   app.post('/maker', mid.requireLogin, controllers.Music.makeMusic);
 
+  app.get('/account', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
   app.post('/toggleListen', mid.requireLogin, controllers.Music.toggleListen);
   app.get('/', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
 };

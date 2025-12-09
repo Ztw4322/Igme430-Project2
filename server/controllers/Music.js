@@ -43,7 +43,7 @@ const makeMusic = async (req, res) => {
 const getMusics = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Music.find(query).select('musicType genre albumName artistName url personName').lean().exec();
+    const docs = await Music.find(query).select('musicType genre albumName artistName listened url personName').lean().exec();
     return res.json({ Musics: docs });
   }
   catch (err) {
@@ -53,12 +53,12 @@ const getMusics = async (req, res) => {
 };
 
 const toggleListen = async (req, res) => {
-  if (!req.albumName) {
+  if (!req.body.music.albumName) {
     return res.status(400).json({ error: 'Music ID is required to toggle status.' });
   }
 
-  const musicId = req.albumName;
-  const ownerId = req.session.owner;
+  const musicId = req.body.music.albumName;
+  const ownerId = req.session.account._id;
 
   const music = await Music.findOne({ albumName: musicId, owner: ownerId }).exec();
 
