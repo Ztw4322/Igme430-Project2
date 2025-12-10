@@ -3,12 +3,12 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
-//#region Handlers 
 
 const handlemusic = (e, onmusicAdded) => {
     e.preventDefault();
     helper.hideError();
 
+    // Extract form data
     const musicType = e.target.querySelector('#musicType').value;
     const genre = e.target.querySelector('#genre').value;
     const albumName = e.target.querySelector('#albumName').value;
@@ -17,33 +17,39 @@ const handlemusic = (e, onmusicAdded) => {
     const personName = e.target.querySelector('#personName').value;
     console.log({ musicType, genre, albumName, artistName, url, personName,});
 
+    // Client-side validation
     if (!musicType || !genre || !albumName || !artistName || !url || !personName) {
         helper.handleError('All fields are required');
         return false;
     }
+    // Submit data to server and trigger reload callback
     helper.sendPost(e.target.action, { musicType, genre, albumName, artistName, url, personName}, onmusicAdded);
     return false;
 };
 
 const handleChangePass = (e) =>
-{ 
-        e.preventDefault();
+{
+    e.preventDefault();
     helper.hideError();
+    // Extract password change details
     const user = e.target.querySelector('#user').value;
     const oldPass = e.target.querySelector('#pass').value;
     const newPass = e.target.querySelector('#pass2').value;
 
+    // Send password change request
     helper.sendPost(e.target.action, { user, oldPass, newPass});
 };
 
 const handleChangeUser = (e) =>
-{ 
+{
     e.preventDefault();
     helper.hideError();
+    // Extract username change details
     const user = e.target.querySelector('#user1').value;
     const newuser = e.target.querySelector('#user2').value;
     const password = e.target.querySelector('#pass1').value;
 
+    // Send username change request
     helper.sendPost(e.target.action, { user, newuser, password});
 };
 
@@ -51,18 +57,18 @@ const handletoggleListened = (e, music, onUpdate) => {
     e.preventDefault();
     helper.hideError();
 
+    // Send toggle request to server
     helper.sendPost('/toggleListen', { music }, onUpdate);
     return false;
 };
-
-//#endregion
 
 
 const MusicChecklistItem = (props) => {
 
     const [music, setMusic] = useState(props.musics);
 
-      useEffect(() => {
+    // Fetch music data on mount and reload trigger
+    useEffect(() => {
         const loadmusicsFromServer = async () => {
             const response = await fetch('/getMusics');
             const data = await response.json();
@@ -71,20 +77,22 @@ const MusicChecklistItem = (props) => {
         };
         loadmusicsFromServer();
     }, [props.reloadmusics]);
-    
+
+    // Render placeholder if list is empty
     if(music.length == 0)
     {
         return (<div className='listenedContainer'>
-        <h2>Listened vs UnListened</h2>-</div>);
+            <h2>Listened vs UnListened</h2>-</div>);
     }
 
-   const ListenvsUnListen = music.map(music => {    
+    // Map music array to checklist items
+   const ListenvsUnListen = music.map(music => {
     const isListened = music.listened;
     return (
         <div className='listenedCheckItem column' key={music._id}>
             <div  className='boxed'>
             <label htmlFor={music._id}>
-                    {music.albumName} - {music.artistName}
+                {music.albumName} - {music.artistName}
             </label>
             </div>
             <div className='boxed'>
@@ -92,12 +100,14 @@ const MusicChecklistItem = (props) => {
                 type="checkbox"
                 id={music._id}
                 checked={isListened}
+                // Call toggle handler on change
                 onChange={(e) => handletoggleListened(e, music, props.triggerReload)}
             />
             </div>
         </div>
     );});
 
+    // Render the checklist container
     return (<div className='listenedContainer'>
         <h2>Listened vs UnListened</h2>
         {ListenvsUnListen}
@@ -108,11 +118,13 @@ const MusicForm = (props) => {
     return (
         <form id="musicForm"
             name="musicForm"
+            // Submit handler
             onSubmit={(e) => handlemusic(e, props.triggerReload)}
             action="/maker"
             method="POST"
             className="musicForm"
         >
+            {/* Form fields for music details */}
             <label htmlFor="musicType">Type of Music Release</label>
             <label htmlFor="genre">Genre:</label>
             <select id="musicType" name="musicType">
@@ -146,8 +158,9 @@ const MusicForm = (props) => {
 
 const MostListened = (props) =>
 {
-     const [music, setMusic] = useState(props.musics);
+    const [music, setMusic] = useState(props.musics);
 
+    // Fetch music data on mount/reload
     useEffect(() => {
         const loadmusicFromServer = async () => {
             const response = await fetch('/getMusics');
@@ -158,7 +171,8 @@ const MostListened = (props) =>
         loadmusicFromServer();
     }, [props.reloadmusics]);
 
-   let genreCounts = {
+    // Genre count initialization
+    let genreCounts = {
     "Pop": 0,
     "Rock": 0,
     "Hip-Hop": 0,
@@ -168,31 +182,35 @@ const MostListened = (props) =>
 };
 
 try {
-if(music.length == 0)
-{       return (
-    <div className="GenreBox">
+    // Render placeholder if list is empty
+    if(music.length == 0)
+    {      return (
+        <div className="GenreBox">
                 <h2>Most Listened Genre</h2>
                 <h3 className="empty">-</h3>
                 </div>
-);
-}
-
-    for(let i = 0; i < music.length; i++) {
-    const genre = music[i].genre;
-    if (genreCounts.hasOwnProperty(genre) && music[i].listened) {
-        genreCounts[genre]++;
+    );
     }
-} 
 
-const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
-    (max, current) => {
-        
-        return current[1] > max[1] ? current : max;
-    },
-    Object.entries(genreCounts)[0]
-);
+    // Count genres, only if music is marked as listened
+    for(let i = 0; i < music.length; i++) {
+        const genre = music[i].genre;
+        if (genreCounts.hasOwnProperty(genre) && music[i].listened) {
+            genreCounts[genre]++;
+        }
+    }
 
-return (<div className="GenreBox">
+    // Find the genre with the maximum count
+    const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
+        (max, current) => {
+
+            return current[1] > max[1] ? current : max;
+        },
+        Object.entries(genreCounts)[0]
+    );
+
+    // Render the result
+    return (<div className="GenreBox">
                 <h2>Most Listened Genre</h2>
                 <h3 className="empty">{mostPopularGenre}</h3>
                 </div>);
@@ -204,8 +222,9 @@ catch
 
 const PopularGenre = (props) =>
 {
-     const [music, setMusic] = useState(props.musics);
+    const [music, setMusic] = useState(props.musics);
 
+    // Fetch music data on mount/reload
     useEffect(() => {
         const loadmusicFromServer = async () => {
             const response = await fetch('/getMusics');
@@ -216,7 +235,8 @@ const PopularGenre = (props) =>
         loadmusicFromServer();
     }, [props.reloadmusics]);
 
-   let genreCounts = {
+    // Genre count initialization
+    let genreCounts = {
     "Pop": 0,
     "Rock": 0,
     "Hip-Hop": 0,
@@ -226,31 +246,35 @@ const PopularGenre = (props) =>
 };
 
 try {
-if(music.length == 0)
-{       return (
-     (<div className="GenreBox">
+    // Render placeholder if list is empty
+    if(music.length == 0)
+    {      return (
+        (<div className="GenreBox">
                 <h2>Most Suggested Genre</h2>
                 <h3 className="empty">-</h3>
                 </div>)
-);
-}
-
-    for(let i = 0; i < music.length; i++) {
-    const genre = music[i].genre;
-    if (genreCounts.hasOwnProperty(genre)) {
-        genreCounts[genre]++;
+    );
     }
-} 
 
-const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
-    (max, current) => {
-        
-        return current[1] > max[1] ? current : max;
-    },
-    Object.entries(genreCounts)[0]
-);
+    // Count all genres
+    for(let i = 0; i < music.length; i++) {
+        const genre = music[i].genre;
+        if (genreCounts.hasOwnProperty(genre)) {
+            genreCounts[genre]++;
+        }
+    }
 
-return (<div className="GenreBox">
+    // Find the genre with the maximum count
+    const [mostPopularGenre, maxCount] = Object.entries(genreCounts).reduce(
+        (max, current) => {
+
+            return current[1] > max[1] ? current : max;
+        },
+        Object.entries(genreCounts)[0]
+    );
+
+    // Render the result
+    return (<div className="GenreBox">
                 <h2>Most Suggested Genre</h2>
                 <h3 className="empty">{mostPopularGenre}</h3>
                 </div>);
@@ -263,6 +287,7 @@ catch
 const MusicList = (props) => {
     const [music, setMusic] = useState(props.musics);
 
+    // Fetch music data on mount/reload
     useEffect(() => {
         const loadmusicsFromServer = async () => {
             const response = await fetch('/getMusics');
@@ -274,6 +299,7 @@ const MusicList = (props) => {
     }, [props.reloadmusics]);
 
 
+    // Render placeholder if list is empty
     if (music.length === 0) {
         return (
             <div className="musicList">
@@ -282,6 +308,7 @@ const MusicList = (props) => {
         );
     }
 
+    // Map music array to display nodes
     const musicNodes = music.map(music => {
         return (
             <div key={music.id} className='music'>
@@ -296,6 +323,7 @@ const MusicList = (props) => {
         );
     });
 
+    // Render the list container
     return (
         <div className='musicList'>
             {musicNodes}
@@ -346,10 +374,12 @@ const ChangeUser = (props) => {
 };
 
 const App = () => {
+    // State for triggering reloads and checking premium status
     const [reloadmusics, setReloadmusics] = useState(false);
     const [isPremium, setIsPremium] = useState(false);
 
-     useEffect(() => {
+    // Check premium status on mount
+    useEffect(() => {
         const checkPremium = async () => {
             try {
                 const response = await fetch('/prem');
@@ -358,43 +388,49 @@ const App = () => {
             } catch (err) {
                 console.error('Error checking premium:', err);
             }
-        }; 
+        };
         checkPremium();
     }, []);
 
+    // Premium user view
     if(isPremium == true)
     {
 
-           return (
-        <div>
-            <div id="makemusic" className='parent'>
-                <MusicChecklistItem musics={[]} triggerReload={() => setReloadmusics(!reloadmusics)}  reloadmusics={reloadmusics}/>
-                <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
-                <div>
-                <PopularGenre reloadmusics={reloadmusics} />
-                <MostListened reloadmusics={reloadmusics}/>
-                </div>
-            </div>
-            <div id="musics">
-                <MusicList musics={[]} reloadmusics={reloadmusics} />
-            </div>
-        </div>
-        
-    );
-    } 
         return (
+            <div>
+                <div id="makemusic" className='parent'>
+                    {/* Checklist, Music Form, and Stats for Premium */}
+                    <MusicChecklistItem musics={[]} triggerReload={() => setReloadmusics(!reloadmusics)}  reloadmusics={reloadmusics}/>
+                    <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
+                    <div>
+                    <PopularGenre reloadmusics={reloadmusics} />
+                    <MostListened reloadmusics={reloadmusics}/>
+                    </div>
+                </div>
+                <div id="musics">
+                    {/* Full Music List */}
+                    <MusicList musics={[]} reloadmusics={reloadmusics} />
+                </div>
+            </div>
+
+        );
+    }
+    // Standard user view
+    return (
         <div>
             <div id="makemusic" className='parent'>
+                {/* Music Form and only Popular Genre stat for Standard users */}
                 <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
                 <div>
                 <PopularGenre reloadmusics={reloadmusics} />
                 </div>
             </div>
             <div id="musics">
+                {/* Full Music List */}
                 <MusicList musics={[]} reloadmusics={reloadmusics} />
             </div>
         </div>
-        
+
     );
 };
 
@@ -411,27 +447,28 @@ const App2 = () => {
 };
 
 
-
 const init = () => {
-      const songButton = document.getElementById('songAdder');
-      const accountButton = document.getElementById('account');
+    const songButton = document.getElementById('songAdder');
+    const accountButton = document.getElementById('account');
 
     const root = createRoot(document.getElementById('app'));
-    
-      accountButton.addEventListener('click', (e) => {
+
+    // Event listener to switch to Account View
+    accountButton.addEventListener('click', (e) => {
         e.preventDefault();
         root.render(<App2 />);
         return false;
-      });
-    
-      songButton.addEventListener('click', (e) => {
+    });
+
+    // Event listener to switch to Music Dashboard View
+    songButton.addEventListener('click', (e) => {
         e.preventDefault();
             root.render(<App />);
         return false;
-      });
-          
+    });
+
+    // Initial render of the Music Dashboard View
     root.render(<App />);
 };
 
 window.onload = init;
-
