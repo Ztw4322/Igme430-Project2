@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const models = require('../models');
 
 const { Account } = models;
@@ -55,10 +56,42 @@ const signup = async (req, res) => {
   }
 };
 
+const UpdatePassword = async (req, res) => {
+  const username = req.body.user;
+  const pass = req.body.oldPass;
+  const newpass = req.body.newPass;
+  const music = await Account.findOne({ username }).exec();
+
+  if (!bcrypt.compare(pass, music.password)) {
+    return res.status(400).json({ error: 'Not correct password' });
+  }
+
+  music.password = await Account.generateHash(newpass);
+  await music.save();
+  return res.json({ redirect: '/maker' });
+};
+
+const UpdateUser = async (req, res) => {
+  const username = req.body.user;
+  const newusername = req.body.newuser;
+  const pass = req.body.password;
+
+  const music = await Account.findOne({ username }).exec();
+
+  if (!bcrypt.compare(pass, music.password)) {
+    return res.status(400).json({ error: 'Not correct password' });
+  }
+
+  music.username = newusername;
+  await music.save();
+  return res.json({ redirect: '/maker' });
+};
 
 module.exports = {
   loginPage,
   login,
   signup,
   logout,
+  UpdatePassword,
+  UpdateUser,
 };

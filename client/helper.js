@@ -7,6 +7,7 @@ const handleError = (message) => {
    entries in the response JSON object, and will handle them appropriately.
 */
 const sendPost = async (url, data, handler) => {
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -14,6 +15,7 @@ const sendPost = async (url, data, handler) => {
     },
     body: JSON.stringify(data),
   });
+  console.log(response);
   const result = await response.json();
   document.getElementById('echoMessage').classList.add('hidden');
 

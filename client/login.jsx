@@ -70,15 +70,17 @@ const SignupWindow = (props) => {
     >
       <label htmlFor="username">Username: </label>
       <input id='user' type="text" name='username' placeholder='username' />
-      <label htmlFor="pass">Password: </label>
+      <label htmlFor="pass">Current Password: </label>
       <input id='pass' type="password" name='pass' placeholder='password' />
-      <label htmlFor="pass2">Password: </label>
+      <label htmlFor="pass2">New Password: </label>
       <input id='pass2' type="password" name='pass2' placeholder='retype password' />
       <input type="submit" value="Sign Up" className='formSubmit' />
       <p id='echoMessage' className='hidden'>All Fields Required!</p>
     </form>
   );
 };
+
+
 
 const init = () => {
   const loginButton = document.getElementById('loginButton');

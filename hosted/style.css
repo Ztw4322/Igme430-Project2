@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -8,18 +9,17 @@ html, body {
 }
 
 .musicList {
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-grid-template-rows: 1fr;
-grid-column-gap: 0px;
-grid-row-gap: 0px;
-margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    margin-top: 10px;
 }
 
-*
-{
-        font-family: "Montserrat", sans-serif;
-     font-optical-sizing: auto;
+* {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
     font-weight: 800;
     font-style: normal;
 }
@@ -28,7 +28,7 @@ margin-top: 10px;
     height: 70px;
     width: 70;
     padding-top: 10px;
-    float:left;
+    float: left;
     border-radius: 8px;
 }
 
@@ -51,38 +51,43 @@ nav:nth-child(1) {
     float: left;
 }
 
-.formSubmit, .makemusicSubmit {
-  background-color: #34a9b2;
-  width: 50%;
-  border: none;
-  color: #ffffff;
-  padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 12px;
+.formSubmit,
+.makemusicSubmit {
+    background-color: #34a9b2;
+    width: 50%;
+    border: none;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
 }
 
 label {
-    color:#36e4a5;
+    color: #36e4a5;
     font-size: 25px;
     display: block;
     margin-top: 20px;
     padding-top: 10px;
 }
 
-#pass, #user, #pass2, #musicName, #musicAge
-{
+#pass,
+#user,
+#pass2,
+#musicName,
+#musicAge {
     width: 50%;
     margin-bottom: 10px;
 }
 
 
-#loginForm, #signupForm, #musicForm
-{
+#loginForm,
+#signupForm,
+#musicForm {
     margin: auto;
     align-self: center;
     background-color: #0a3437;
@@ -92,17 +97,27 @@ label {
     padding-bottom: 20px;
 }
 
-#musicName, #music
-{
+#userform, #passform {
+    margin: auto;
+    align-self: center;
+    background-color: #0a3437;
+    width: 45%;
+    border-radius: 25px;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+#musicName,
+#music {
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
 }
-#musicForm
-{
+
+#musicForm {
     width: 100%;
     display: grid;
-        margin-top: 10px;
+    margin-top: 10px;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 1fr);
     grid-column-gap: 0px;
@@ -110,27 +125,43 @@ label {
 }
 
 .parent {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-grid-template-rows: 1fr;
-grid-column-gap: 0px;
-grid-row-gap: 0px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
 }
-.music
-{
+
+.parent2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+}
+
+.music {
     margin: auto;
     align-self: center;
     background-color: #0a3437;
     width: 80%;
-    color:#ffffff;
+    color: #ffffff;
     border-radius: 25px;
     text-align: center;
     padding-bottom: 20px;
     margin-top: 10px;
 }
 
-.GenreBox
-{
+.boxed label {
+    font-size: large;
+}
+
+.listenedContainer h2 {
+    color: #36e4a5;
+}
+
+.GenreBox {
     margin: auto;
     align-self: center;
     background-color: #0a3437;
@@ -140,22 +171,21 @@ grid-row-gap: 0px;
     text-align: center;
     padding-bottom: 20px;
 }
-.column
-{
-display: grid;
-grid-template-columns: 1fr 1fr;
-padding: auto;  
+
+.column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: auto;
 }
 
-.boxed label
-{
+.boxed label {
     display: inline;
-    height:50%
+    height: 50%
 }
 
-.listenedContainer{
-  margin: auto;
-  overflow: auto;
+.listenedContainer {
+    margin: auto;
+    overflow: auto;
     align-self: center;
     background-color: #0a3437;
     width: 70%;
@@ -166,38 +196,39 @@ padding: auto;
 }
 
 
-.GenreBox h2
-{
-        color:#36e4a5;
+.GenreBox h2 {
+    color: #36e4a5;
 
 }
 
-.GenreBox h3
-{
-        color:#ffffff;
-        font-size: 45px;
+.GenreBox h3 {
+    color: #ffffff;
+    font-size: 45px;
 }
 
-.musicface
-{
+.musicface {
     width: 50%;
 }
 
-.formSubmit, .makemusicSubmit
-{
+.formSubmit,
+.makemusicSubmit {
     display: block;
     margin: auto;
     margin-top: 10px;
 }
 
-.navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color:  #36e4a5;
+.navlink a,
+.navlink a:link,
+.navlink a:visited,
+.navlink a:hover,
+.navlink a:active {
+    color: #36e4a5;
     text-decoration: none;
     padding: 10px;
 }
 
 .navlink a:hover {
-    color:  #1e8861;
+    color: #1e8861;
     transition: color 0.8s ease;
 }
 
@@ -205,12 +236,13 @@ padding: auto;
     display: none;
 }
 
-input[type=text], select {
-  width: 50%;
-  padding: 12px;
-  margin: auto;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+input[type=text],
+select {
+    width: 50%;
+    padding: 12px;
+    margin: auto;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }

@@ -14,9 +14,15 @@ const router = (app) => {
   app.get('/maker', mid.requireLogin, controllers.Music.makerPage);
   app.post('/maker', mid.requireLogin, controllers.Music.makeMusic);
 
-  app.get('/account', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
+  app.post('/pass', mid.requireLogin, controllers.Account.UpdatePassword);
+  app.post('/user', mid.requireLogin, controllers.Account.UpdateUser);
+
   app.post('/toggleListen', mid.requireLogin, controllers.Music.toggleListen);
   app.get('/', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
+
+  app.use((req, res) => {
+    return res.redirect('/');
+  });
 };
 
 module.exports = router;
