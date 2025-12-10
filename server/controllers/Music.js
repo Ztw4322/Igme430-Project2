@@ -45,8 +45,7 @@ const getMusics = async (req, res) => {
     const query = { owner: req.session.account._id };
     const docs = await Music.find(query).select('musicType genre albumName artistName listened url personName').lean().exec();
     return res.json({ Musics: docs });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error retrieving Musics!' });
   }
@@ -67,9 +66,7 @@ const toggleListen = async (req, res) => {
   return res.status(200).json({ music });
 };
 
-const makerPage = (req, res) => {
-  return res.render('app');
-};
+const makerPage = (req, res) => res.render('app');
 
 module.exports = {
   makerPage,

@@ -2,12 +2,11 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const compression = require('compression');
-const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
 const helmet = require('helmet');
 const session = require('express-session');
-const RedisStore = require('connect-redis').RedisStore;
+const { RedisStore } = require('connect-redis');
 const redis = require('redis');
 
 const router = require('./router.js');

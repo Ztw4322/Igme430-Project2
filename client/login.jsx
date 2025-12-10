@@ -27,7 +27,6 @@ const handleSignup = (e) => {
   const pass2 = e.target.querySelector('#pass2').value;
   const premium = e.target.querySelector('#premium');
   const ischecked = premium.checked;
-  console.log(ischecked);
   if (!username || !pass || !pass2) {
     helper.handleError('All fields are required!');
     return false;
