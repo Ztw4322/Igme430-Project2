@@ -19,6 +19,7 @@ const router = (app) => {
 
   app.post('/toggleListen', mid.requireLogin, controllers.Music.toggleListen);
   app.get('/', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
+  app.get('/prem', mid.requireLogin, controllers.Account.getPrem);
 
   app.use((req, res) => {
     return res.redirect('/');

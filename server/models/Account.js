@@ -39,7 +39,6 @@ const AccountSchema = new mongoose.Schema({
   },
   premium: {
     type: Boolean,
-    default: false,
   },
 });
 

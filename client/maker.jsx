@@ -3,6 +3,8 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
+//#region Handlers 
+
 const handlemusic = (e, onmusicAdded) => {
     e.preventDefault();
     helper.hideError();
@@ -32,18 +34,18 @@ const handleChangePass = (e) =>
     const newPass = e.target.querySelector('#pass2').value;
 
     helper.sendPost(e.target.action, { user, oldPass, newPass});
-}
+};
 
 const handleChangeUser = (e) =>
 { 
-        e.preventDefault();
+    e.preventDefault();
     helper.hideError();
     const user = e.target.querySelector('#user1').value;
     const newuser = e.target.querySelector('#user2').value;
     const password = e.target.querySelector('#pass1').value;
 
     helper.sendPost(e.target.action, { user, newuser, password});
-}
+};
 
 const handletoggleListened = (e, music, onUpdate) => {
     e.preventDefault();
@@ -52,6 +54,9 @@ const handletoggleListened = (e, music, onUpdate) => {
     helper.sendPost('/toggleListen', { music }, onUpdate);
     return false;
 };
+
+//#endregion
+
 
 const MusicChecklistItem = (props) => {
 
@@ -197,7 +202,6 @@ catch
 }
 };
 
-
 const PopularGenre = (props) =>
 {
      const [music, setMusic] = useState(props.musics);
@@ -256,7 +260,6 @@ catch
 }
 };
 
-
 const MusicList = (props) => {
     const [music, setMusic] = useState(props.musics);
 
@@ -300,7 +303,6 @@ const MusicList = (props) => {
     );
 };
 
-
 const ChangePassword = (props) => {
   return (
     <form id="passform"
@@ -322,7 +324,6 @@ const ChangePassword = (props) => {
   );
 };
 
-
 const ChangeUser = (props) => {
   return (
     <form id="userform"
@@ -343,13 +344,31 @@ const ChangeUser = (props) => {
     </form>
   );
 };
+
 const App = () => {
     const [reloadmusics, setReloadmusics] = useState(false);
+    const [isPremium, setIsPremium] = useState(false);
 
-    return (
+     useEffect(() => {
+        const checkPremium = async () => {
+            try {
+                const response = await fetch('/prem');
+                const data = await response.json();
+                setIsPremium(data.prem);
+            } catch (err) {
+                console.error('Error checking premium:', err);
+            }
+        }; 
+        checkPremium();
+    }, []);
+
+    if(isPremium == true)
+    {
+
+           return (
         <div>
             <div id="makemusic" className='parent'>
-                <MusicChecklistItem musics={[]} reloadmusics={reloadmusics}/>
+                <MusicChecklistItem musics={[]} triggerReload={() => setReloadmusics(!reloadmusics)}  reloadmusics={reloadmusics}/>
                 <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
                 <div>
                 <PopularGenre reloadmusics={reloadmusics} />
@@ -360,6 +379,22 @@ const App = () => {
                 <MusicList musics={[]} reloadmusics={reloadmusics} />
             </div>
         </div>
+        
+    );
+    } 
+        return (
+        <div>
+            <div id="makemusic" className='parent'>
+                <MusicForm triggerReload={() => setReloadmusics(!reloadmusics)} />
+                <div>
+                <PopularGenre reloadmusics={reloadmusics} />
+                </div>
+            </div>
+            <div id="musics">
+                <MusicList musics={[]} reloadmusics={reloadmusics} />
+            </div>
+        </div>
+        
     );
 };
 
@@ -375,10 +410,12 @@ const App2 = () => {
     );
 };
 
+
+
 const init = () => {
       const songButton = document.getElementById('songAdder');
       const accountButton = document.getElementById('account');
-    
+
     const root = createRoot(document.getElementById('app'));
     
       accountButton.addEventListener('click', (e) => {
@@ -397,3 +434,4 @@ const init = () => {
 };
 
 window.onload = init;
+

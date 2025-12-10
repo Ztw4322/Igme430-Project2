@@ -64,7 +64,7 @@ const toggleListen = async (req, res) => {
 
   music.listened = !music.listened;
   await music.save();
-  return res.status(200).json({ message: 'Listened status successfully toggled.', music });
+  return res.status(200).json({ music });
 };
 
 const makerPage = (req, res) => {

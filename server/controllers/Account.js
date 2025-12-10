@@ -5,7 +5,6 @@ const { Account } = models;
 
 const loginPage = (req, res) => res.render('login');
 
-
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
@@ -34,7 +33,10 @@ const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
   const pass2 = `${req.body.pass2}`;
-
+  let prem = false;
+  if (req.body.premium === 'on') {
+    prem = true;
+  }
   if (!username || !pass || !pass2) {
     return res.status(400).json({ error: 'All Fields are required!' });
   }
@@ -45,15 +47,15 @@ const signup = async (req, res) => {
 
   try {
     const hash = await Account.generateHash(pass);
-    const newAccount = new Account({ username, password: hash });
+    const newAccount = new Account({ username, password: hash, premium: prem });
     await newAccount.save();
-    return res.json({ redirect: '/maker' });
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use!' });
     }
   }
+  return res.json({ redirect: '/maker' });
 };
 
 const UpdatePassword = async (req, res) => {
@@ -87,6 +89,17 @@ const UpdateUser = async (req, res) => {
   return res.json({ redirect: '/maker' });
 };
 
+const getPrem = async (req, res) => {
+  try {
+    const account = await Account.findById(req.session.account._id);
+    const prem = account.premium;
+    return res.json({ prem });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error' });
+  }
+};
+
 module.exports = {
   loginPage,
   login,
@@ -94,4 +107,5 @@ module.exports = {
   logout,
   UpdatePassword,
   UpdateUser,
+  getPrem,
 };
